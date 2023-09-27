@@ -27,6 +27,9 @@ String cnvIP;
 float xDirection;
 float yDirection;
 
+//brightness value
+int brightness;
+int LEDpin = 3;
 
 ///function called when data is received from Unity
 void unityOSCdata(const OscMessage& unityMessage) 
@@ -50,9 +53,12 @@ yDirection = unityMessage.arg<float>(1);
   Serial.print(yDirection);
   Serial.println();
 
-  //pinMode(LEDpin, OUTPUT);
-  //int brightness = map(xDirection,-1,1,0,255);
-  //analogWrite(LEDpin,brightness);
+  
+  brightness = map(xDirection,-1,1,0,255);
+  //an extra error check to insure the output value stays between 0 -255
+  constrain(brightness,0,255);
+  
+  analogWrite(LEDpin,brightness);
  
 }
 
@@ -85,7 +91,8 @@ void setup()
     pinMode(LED_BUILTIN,OUTPUT);
     digitalWrite(LED_BUILTIN,HIGH);
 
-    
+    ///set the other LEDpins as output
+    pinMode(LEDpin, OUTPUT);
  
     //////******THE OUTPUTS*********//////
     //This binds the incoming data to a callback function (just like how it is set up on the unity side)
